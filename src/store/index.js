@@ -7,6 +7,6 @@ Vue.use(Vuex)
 
 export function createStore () {
   return new Vuex.Store({
-    strict: true
+    strict: true,
   })
 }
