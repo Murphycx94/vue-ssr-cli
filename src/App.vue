@@ -1,15 +1,16 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    Vue-SSR渲染成功123
+    <router-view />
   </div>
 </template>
 
 <script>
-  export default {
-		
-	}
+import { mapState } from 'vuex'
+
+export default {
+  mounted () {
+    console.log('Vue-SSR渲染成功')
+  }
+}
 </script>
-
-<style>
-
-</style>

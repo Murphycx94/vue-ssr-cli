@@ -1,28 +1,40 @@
 /* @flow */
 
-import { escape } from 'he'
+import { escape, noUnitNumericStyleProps } from '../util'
 import { hyphenate } from 'shared/util'
 import { getStyle } from 'web/util/style'
 
-function genStyleText (vnode: VNode): string {
+export function genStyle (style: Object): string {
   let styleText = ''
-  const style = getStyle(vnode, false)
   for (const key in style) {
     const value = style[key]
     const hyphenatedKey = hyphenate(key)
     if (Array.isArray(value)) {
       for (let i = 0, len = value.length; i < len; i++) {
-        styleText += `${hyphenatedKey}:${value[i]};`
+        styleText += normalizeValue(hyphenatedKey, value[i])
       }
     } else {
-      styleText += `${hyphenatedKey}:${value};`
+      styleText += normalizeValue(hyphenatedKey, value)
     }
   }
   return styleText
 }
 
+function normalizeValue(key: string, value: any): string {
+  if (
+    typeof value === 'string' ||
+    (typeof value === 'number' && noUnitNumericStyleProps[key]) ||
+    value === 0
+  ) {
+    return `${key}:${value};`
+  } else {
+    // invalid values
+    return ``
+  }
+}
+
 export default function renderStyle (vnode: VNodeWithData): ?string {
-  const styleText = genStyleText(vnode)
+  const styleText = genStyle(getStyle(vnode, false))
   if (styleText !== '') {
     return ` style=${JSON.stringify(escape(styleText))}`
   }

@@ -1,25 +1,19 @@
-'use strict'
-
 import Vue from 'vue'
-import * as App from './App.vue'
-import { createStore } from './store'
-import { createRouter } from './router'
-import { sync } from 'vuex-router-sync'
-import titleMixin from './util/title'
+import App from './App'
+import { createRouter } from 'src/router'
+import { createStore } from 'src/store'
 
-Vue.mixin(titleMixin)
-
-export function createApp() {
-  const store = createStore()
+export const createApp = () => {
   const router = createRouter()
-
-  sync(store, router)
-
+  const store = createStore()
   const app = new Vue({
     router,
     store,
     render: h => h(App)
   })
-
-  return { app, router, store }
+  return {
+    app,
+    router,
+    store
+  }
 }

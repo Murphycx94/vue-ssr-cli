@@ -1,19 +1,17 @@
-'use strict'
-
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Router from 'vue-router'
 
-Vue.use(VueRouter)
+Vue.use(Router)
 
-const routes = [].concat()
-
-export function createRouter () {
-  return new VueRouter({
+export const createRouter = () => {
+  return new Router({
     mode: 'history',
     scrollBehavior: () => ({ y: 0 }),
     routes: [
-      { name: 'home', path: '/home', component: resolve => require(['../views/index.vue'], resolve)},
-      { path: '*', redirect: { name: 'home' } }
+      {
+        path: '/home',
+        component: () => import('src/pages/home')
+      }
     ]
   })
 }

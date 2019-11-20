@@ -1,7 +1,7 @@
 /* @flow */
 
 import { getStyle, normalizeStyleBinding } from 'web/util/style'
-import { cached, camelize, extend, isDef, isUndef } from 'shared/util'
+import { cached, camelize, extend, isDef, isUndef, hyphenate } from 'shared/util'
 
 const cssVarRE = /^--/
 const importantRE = /\s*!important$/
@@ -10,7 +10,7 @@ const setProp = (el, name, val) => {
   if (cssVarRE.test(name)) {
     el.style.setProperty(name, val)
   } else if (importantRE.test(val)) {
-    el.style.setProperty(name, val.replace(importantRE, ''), 'important')
+    el.style.setProperty(hyphenate(name), val.replace(importantRE, ''), 'important')
   } else {
     const normalizedName = normalize(name)
     if (Array.isArray(val)) {
@@ -26,20 +26,20 @@ const setProp = (el, name, val) => {
   }
 }
 
-const prefixes = ['Webkit', 'Moz', 'ms']
+const vendorNames = ['Webkit', 'Moz', 'ms']
 
-let testEl
+let emptyStyle
 const normalize = cached(function (prop) {
-  testEl = testEl || document.createElement('div')
+  emptyStyle = emptyStyle || document.createElement('div').style
   prop = camelize(prop)
-  if (prop !== 'filter' && (prop in testEl.style)) {
+  if (prop !== 'filter' && (prop in emptyStyle)) {
     return prop
   }
-  const upper = prop.charAt(0).toUpperCase() + prop.slice(1)
-  for (let i = 0; i < prefixes.length; i++) {
-    const prefixed = prefixes[i] + upper
-    if (prefixed in testEl.style) {
-      return prefixed
+  const capName = prop.charAt(0).toUpperCase() + prop.slice(1)
+  for (let i = 0; i < vendorNames.length; i++) {
+    const name = vendorNames[i] + capName
+    if (name in emptyStyle) {
+      return name
     }
   }
 })
@@ -65,7 +65,7 @@ function updateStyle (oldVnode: VNodeWithData, vnode: VNodeWithData) {
   const style = normalizeStyleBinding(vnode.data.style) || {}
 
   // store normalized style under a different key for next diff
-  // make sure to clone it if it's reactive, since the user likley wants
+  // make sure to clone it if it's reactive, since the user likely wants
   // to mutate it.
   vnode.data.normalizedStyle = isDef(style.__ob__)
     ? extend({}, style)

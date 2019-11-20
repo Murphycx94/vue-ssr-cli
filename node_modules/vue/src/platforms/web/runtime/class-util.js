@@ -1,5 +1,7 @@
 /* @flow */
 
+const whitespaceRE = /\s+/
+
 /**
  * Add class with compatibility for SVG since classList is not supported on
  * SVG elements in IE
@@ -13,7 +15,7 @@ export function addClass (el: HTMLElement, cls: ?string) {
   /* istanbul ignore else */
   if (el.classList) {
     if (cls.indexOf(' ') > -1) {
-      cls.split(/\s+/).forEach(c => el.classList.add(c))
+      cls.split(whitespaceRE).forEach(c => el.classList.add(c))
     } else {
       el.classList.add(cls)
     }
@@ -38,9 +40,12 @@ export function removeClass (el: HTMLElement, cls: ?string) {
   /* istanbul ignore else */
   if (el.classList) {
     if (cls.indexOf(' ') > -1) {
-      cls.split(/\s+/).forEach(c => el.classList.remove(c))
+      cls.split(whitespaceRE).forEach(c => el.classList.remove(c))
     } else {
       el.classList.remove(cls)
+    }
+    if (!el.classList.length) {
+      el.removeAttribute('class')
     }
   } else {
     let cur = ` ${el.getAttribute('class') || ''} `
@@ -48,6 +53,11 @@ export function removeClass (el: HTMLElement, cls: ?string) {
     while (cur.indexOf(tar) >= 0) {
       cur = cur.replace(tar, ' ')
     }
-    el.setAttribute('class', cur.trim())
+    cur = cur.trim()
+    if (cur) {
+      el.setAttribute('class', cur)
+    } else {
+      el.removeAttribute('class')
+    }
   }
 }

@@ -53,10 +53,8 @@ export function createMatcher (
         }
       }
 
-      if (record) {
-        location.path = fillParams(record.path, location.params, `named route "${name}"`)
-        return _createRoute(record, location, redirectedFrom)
-      }
+      location.path = fillParams(record.path, location.params, `named route "${name}"`)
+      return _createRoute(record, location, redirectedFrom)
     } else if (location.path) {
       location.params = {}
       for (let i = 0; i < pathList.length; i++) {
@@ -77,8 +75,8 @@ export function createMatcher (
   ): Route {
     const originalRedirect = record.redirect
     let redirect = typeof originalRedirect === 'function'
-        ? originalRedirect(createRoute(record, location, null, router))
-        : originalRedirect
+      ? originalRedirect(createRoute(record, location, null, router))
+      : originalRedirect
 
     if (typeof redirect === 'string') {
       redirect = { path: redirect }
@@ -189,7 +187,8 @@ function matchRoute (
     const key = regex.keys[i - 1]
     const val = typeof m[i] === 'string' ? decodeURIComponent(m[i]) : m[i]
     if (key) {
-      params[key.name] = val
+      // Fix #1994: using * with props: true generates a param named 0
+      params[key.name || 'pathMatch'] = val
     }
   }
 
