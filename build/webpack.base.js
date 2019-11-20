@@ -26,11 +26,24 @@ module.exports = {
         loader: 'vue-loader'
       },
       {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
         test: /\.css$/,
         use: [
           'vue-style-loader',
           'css-loader'
         ]
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: '[name].[ext]?[hash]'
+        }
       },
       {
         test: /\.less$/,

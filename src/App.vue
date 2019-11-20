@@ -14,3 +14,10 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+#app {
+  height: 100%;
+  width: 100%;
+}
+</style>
