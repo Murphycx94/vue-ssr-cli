@@ -20,7 +20,7 @@ module.exports = (app, cb) => {
   }
 
   const readyPromise = new Promise(r => { resolve = r })
-  clientConfig.entry.app = ['webpack-hot-middleware/client', clientConfig.entry.app]
+  clientConfig.entry.app = ['webpack-hot-middleware/client?reload=true', clientConfig.entry.app]
 
   // dev middleware
   const clientCompiler = webpack(clientConfig)
@@ -48,7 +48,7 @@ module.exports = (app, cb) => {
   })
   
   // hot middleware
-  app.use(require('webpack-hot-middleware')(clientCompiler, { heartbeat: 5000 }))
+  app.use(require('webpack-hot-middleware')(clientCompiler, { heartbeat: 5000, reload: true }))
 
   const serverCompiler = webpack(serverConfig)
   const mfs = new MFS()

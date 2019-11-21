@@ -10,7 +10,7 @@ import { mapState } from 'vuex'
 
 export default {
   mounted () {
-    console.log('Vue-SSR渲染成功')
+    console.log('APP.vue mounted')
   }
 }
 </script>
