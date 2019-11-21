@@ -12,8 +12,8 @@ module.exports = merge(baseConfig, {
     app: resolve('src/entry/client.js')
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new VueSSRClientPlugin(),
+    isProd && new CleanWebpackPlugin(),
     !isProd && new webpack.HotModuleReplacementPlugin(),
   ].filter(Boolean)
 })
