@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    Vue-SSR渲染成功123
     <router-view />
   </div>
 </template>

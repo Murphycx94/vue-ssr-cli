@@ -9,7 +9,7 @@ module.exports = {
   mode: isProd ? 'production' : 'development',
   output: {
     path: resolve('dist'),
-    filename: isProd ? '[name].[chunkhash:8].js' : '[name].js',
+    filename: isProd ? 'js/[name].[chunkhash:8].js' : 'js/[name].js',
     publicPath: '/dist/'
   },
   devtool: 'source-map',
@@ -69,8 +69,8 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(), // vue-loader
     isProd && new MiniCssExtractPlugin({
-      filname: '[name].[hash].css',
-      chunkFilename: '[id].[hash].css'
+      filename: 'css/[name].[contenthash:8].css',
+      chunkFilename: 'css/[name].[contenthash:8].chunk.css'
     }),
     !isProd && new webpack.NoEmitOnErrorsPlugin(),
   ].filter(Boolean)
