@@ -1,6 +1,7 @@
-const { resolve } = require('./utils')
 const webpack = require('webpack')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const { resolve } = require('./utils')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -35,7 +36,7 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 8192,
-          name: 'img/[name].[hash:8].[ext]'
+          name: 'img/[name].[contenthash:8].[ext]'
         }
       },
       {
@@ -43,21 +44,23 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 8192,
-          name: 'media/[name].[hash:8].[ext]'
+          name: 'media/[name].[contenthash:8].[ext]'
         }
       },
       {
         test: /\.css$/,
         use: [
-          'vue-style-loader',
+          isProd ? MiniCssExtractPlugin.loader : 'vue-style-loader',
+          'postcss-loader',
           'css-loader'
         ]
       },
       {
         test: /\.less$/,
         use: [
-          'vue-style-loader',
+          isProd ? MiniCssExtractPlugin.loader : 'vue-style-loader',
           'css-loader',
+          'postcss-loader',
           'less-loader'
         ]
       }
@@ -65,6 +68,10 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(), // vue-loader
-    !isProd && new webpack.NoEmitOnErrorsPlugin()
+    isProd && new MiniCssExtractPlugin({
+      filname: '[name].[hash].css',
+      chunkFilename: '[id].[hash].css'
+    }),
+    !isProd && new webpack.NoEmitOnErrorsPlugin(),
   ].filter(Boolean)
 }
